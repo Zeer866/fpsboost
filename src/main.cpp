@@ -3,7 +3,7 @@
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CCNode.hpp>
-
+#include <Geode/ui/SceneManager.hpp>
 using namespace geode::prelude;
 
 static double g_current = 0.0;
