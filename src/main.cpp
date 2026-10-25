@@ -3,7 +3,7 @@
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CCNode.hpp>
-#include <Geode/ui/SceneManager.hpp>
+
 using namespace geode::prelude;
 
 static double g_current = 0.0;
@@ -29,13 +29,12 @@ static void updateCounter() {
     bool show = on() && Mod::get()->getSettingValue<bool>("fps-counter");
     if (show && !g_label) {
         g_label = CCLabelBMFont::create("FPS: --", "bigFont.fnt");
+        g_label->retain();
         g_label->setAnchorPoint({0.f, 1.f});
         g_label->setScale(0.4f);
         g_label->setOpacity(180);
         auto size = CCDirector::sharedDirector()->getWinSize();
         g_label->setPosition({4.f, size.height - 4.f});
-        g_label->setZOrder(10000);
-        SceneManager::get()->keepAcrossScenes(g_label);
     }
     if (g_label) g_label->setVisible(show);
 }
@@ -52,6 +51,15 @@ class $modify(FPSMenuLayer, MenuLayer) {
 class $modify(FPSScheduler, CCScheduler) {
     void update(float dt) {
         CCScheduler::update(dt);
+
+        // Mantiene el contador en la escena actual
+        if (g_label && g_label->isVisible()) {
+            auto scene = CCDirector::sharedDirector()->getRunningScene();
+            if (scene && g_label->getParent() != scene) {
+                g_label->removeFromParentAndCleanup(false);
+                scene->addChild(g_label, 100000);
+            }
+        }
 
         // Contador de FPS (cada 0.5 s)
         static float cacc = 0.f;
