@@ -1,24 +1,45 @@
 {
   "geode": "5.11.2",
   "gd": { "android": "2.2081" },
-  "version": "v1.0.0",
+  "version": "v1.1.0",
   "id": "zeer866.fpsboost",
   "name": "FPS Boost",
   "developer": "Zeer866",
-  "description": "Sube el limite de FPS del juego.",
+  "description": "Sube el limite de FPS y optimiza el juego.",
+  "links": {
+    "community": "https://discord.gg/v5QxgQCfM"
+  },
   "settings": {
-    "fps": {
-      "type": "int",
-      "name": "FPS objetivo",
-      "description": "FPS a los que intentara correr el juego.",
-      "default": 120,
-      "min": 30,
-      "max": 360
-    },
     "enabled": {
       "type": "bool",
       "name": "Activar FPS Boost",
       "default": true
+    },
+    "fps": {
+      "type": "int",
+      "name": "FPS objetivo",
+      "description": "Limite de FPS (30 a 800).",
+      "default": 120,
+      "min": 30,
+      "max": 800
+    },
+    "safe-mode": {
+      "type": "bool",
+      "name": "Modo seguro",
+      "description": "Baja el limite si tu celular no aguanta los FPS, para evitar lag.",
+      "default": true
+    },
+    "low-detail": {
+      "type": "bool",
+      "name": "Low Detail Mode",
+      "description": "Quita particulas y rotaciones decorativas para ganar FPS.",
+      "default": false
+    },
+    "fps-counter": {
+      "type": "bool",
+      "name": "Contador de FPS",
+      "description": "Muestra los FPS en pantalla.",
+      "default": false
     }
   }
 }
