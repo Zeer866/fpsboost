@@ -1,5 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
+#include <Geode/modify/PlayLayer.hpp>
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CCNode.hpp>
@@ -14,6 +15,7 @@ static CCLabelBMFont* g_label = nullptr;
 static bool on() { return Mod::get()->getSettingValue<bool>("enabled"); }
 static bool lowDetail() { return on() && Mod::get()->getSettingValue<bool>("low-detail"); }
 static bool renderLite() { return on() && Mod::get()->getSettingValue<bool>("render-lite"); }
+static bool autoLDM() { return on() && Mod::get()->getSettingValue<bool>("auto-ldm"); }
 static bool forced() { return on() && Mod::get()->getSettingValue<bool>("force-fps"); }
 static double target() {
     return static_cast<double>(Mod::get()->getSettingValue<int64_t>("fps"));
@@ -65,6 +67,17 @@ class $modify(FPSMenuLayer, MenuLayer) {
         applyRender();
         updateCounter();
         return true;
+    }
+};
+
+// Auto LDM: activa el Low Detail Mode del juego en cada nivel
+class $modify(FPSPlayLayer, PlayLayer) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
+        if (autoLDM() && level) {
+            level->m_lowDetailMode = true;
+            level->m_lowDetailModeToggled = true;
+        }
+        return PlayLayer::init(level, useReplay, dontCreateObjects);
     }
 };
 
