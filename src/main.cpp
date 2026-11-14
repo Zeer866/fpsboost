@@ -3,6 +3,7 @@
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CCNode.hpp>
+#include <Geode/modify/CCMotionStreak.hpp>
 #include <cmath>
 
 using namespace geode::prelude;
@@ -12,6 +13,7 @@ static CCLabelBMFont* g_label = nullptr;
 
 static bool on() { return Mod::get()->getSettingValue<bool>("enabled"); }
 static bool lowDetail() { return on() && Mod::get()->getSettingValue<bool>("low-detail"); }
+static bool renderLite() { return on() && Mod::get()->getSettingValue<bool>("render-lite"); }
 static bool forced() { return on() && Mod::get()->getSettingValue<bool>("force-fps"); }
 static double target() {
     return static_cast<double>(Mod::get()->getSettingValue<int64_t>("fps"));
@@ -27,7 +29,12 @@ static void applyFPS() {
     if (on()) setFPS(target());
 }
 
-// Si el juego cambia el intervalo, lo devuelve al valor exacto elegido
+static void applyRender() {
+    if (renderLite()) {
+        CCDirector::sharedDirector()->setDepthTest(false);
+    }
+}
+
 static void enforceFPS() {
     if (!forced()) return;
     double want = 1.0 / target();
@@ -55,6 +62,7 @@ class $modify(FPSMenuLayer, MenuLayer) {
     bool init() {
         if (!MenuLayer::init()) return false;
         applyFPS();
+        applyRender();
         updateCounter();
         return true;
     }
@@ -64,10 +72,8 @@ class $modify(FPSScheduler, CCScheduler) {
     void update(float dt) {
         CCScheduler::update(dt);
 
-        // Forzar FPS exactos
         enforceFPS();
 
-        // Mantiene el contador en la escena actual
         if (g_label && g_label->isVisible()) {
             auto scene = CCDirector::sharedDirector()->getRunningScene();
             if (scene && g_label->getParent() != scene) {
@@ -76,7 +82,6 @@ class $modify(FPSScheduler, CCScheduler) {
             }
         }
 
-        // Contador de FPS (cada 0.5 s)
         static float cacc = 0.f;
         static int cframes = 0;
         cacc += dt;
@@ -90,7 +95,6 @@ class $modify(FPSScheduler, CCScheduler) {
             cframes = 0;
         }
 
-        // Modo seguro (cada 2 s)
         static float acc = 0.f;
         static int frames = 0;
         acc += dt;
@@ -137,9 +141,17 @@ class $modify(FPSNode, CCNode) {
     }
 };
 
+class $modify(FPSStreak, CCMotionStreak) {
+    void draw() {
+        if (renderLite()) return;
+        CCMotionStreak::draw();
+    }
+};
+
 $on_mod(Loaded) {
     listenForSettingChanges<int64_t>("fps", [](int64_t) { applyFPS(); });
-    listenForSettingChanges<bool>("enabled", [](bool) { applyFPS(); updateCounter(); });
+    listenForSettingChanges<bool>("enabled", [](bool) { applyFPS(); applyRender(); updateCounter(); });
     listenForSettingChanges<bool>("force-fps", [](bool) { applyFPS(); });
+    listenForSettingChanges<bool>("render-lite", [](bool) { applyRender(); });
     listenForSettingChanges<bool>("fps-counter", [](bool) { updateCounter(); });
 }
