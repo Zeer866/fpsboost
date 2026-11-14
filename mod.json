@@ -1,7 +1,7 @@
 {
   "geode": "5.11.2",
-  "gd": { "android": "2.2081" },
-  "version": "v1.2.0",
+  "gd": { "win": "2.2081", "android": "2.2081" },
+  "version": "v1.3.0",
   "id": "zeer866.fpsboost",
   "name": "FPS Boost",
   "developer": "Zeer866",
@@ -32,13 +32,19 @@
     "safe-mode": {
       "type": "bool",
       "name": "Modo seguro",
-      "description": "Baja el limite si tu celular no aguanta los FPS, para evitar lag.",
+      "description": "Baja el limite si tu dispositivo no aguanta los FPS, para evitar lag.",
       "default": true
     },
     "low-detail": {
       "type": "bool",
       "name": "Low Detail Mode",
       "description": "Quita particulas y rotaciones decorativas para ganar FPS.",
+      "default": false
+    },
+    "render-lite": {
+      "type": "bool",
+      "name": "Render ligero",
+      "description": "Apaga el depth test de la GPU y oculta las estelas. Reinicia el juego para volver al normal.",
       "default": false
     },
     "fps-counter": {
