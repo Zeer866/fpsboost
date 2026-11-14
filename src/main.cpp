@@ -3,6 +3,7 @@
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CCNode.hpp>
+#include <cmath>
 
 using namespace geode::prelude;
 
@@ -11,6 +12,7 @@ static CCLabelBMFont* g_label = nullptr;
 
 static bool on() { return Mod::get()->getSettingValue<bool>("enabled"); }
 static bool lowDetail() { return on() && Mod::get()->getSettingValue<bool>("low-detail"); }
+static bool forced() { return on() && Mod::get()->getSettingValue<bool>("force-fps"); }
 static double target() {
     return static_cast<double>(Mod::get()->getSettingValue<int64_t>("fps"));
 }
@@ -23,6 +25,16 @@ static void setFPS(double fps) {
 
 static void applyFPS() {
     if (on()) setFPS(target());
+}
+
+// Si el juego cambia el intervalo, lo devuelve al valor exacto elegido
+static void enforceFPS() {
+    if (!forced()) return;
+    double want = 1.0 / target();
+    auto dir = CCDirector::sharedDirector();
+    if (std::abs(dir->getAnimationInterval() - want) > 0.000001) {
+        setFPS(target());
+    }
 }
 
 static void updateCounter() {
@@ -51,6 +63,9 @@ class $modify(FPSMenuLayer, MenuLayer) {
 class $modify(FPSScheduler, CCScheduler) {
     void update(float dt) {
         CCScheduler::update(dt);
+
+        // Forzar FPS exactos
+        enforceFPS();
 
         // Mantiene el contador en la escena actual
         if (g_label && g_label->isVisible()) {
@@ -86,7 +101,7 @@ class $modify(FPSScheduler, CCScheduler) {
         acc = 0.f;
         frames = 0;
 
-        if (!on() || !Mod::get()->getSettingValue<bool>("safe-mode")) return;
+        if (!on() || forced() || !Mod::get()->getSettingValue<bool>("safe-mode")) return;
         if (g_current <= 0.0) return;
 
         if (measured < g_current * 0.88 && g_current > 30.0) {
@@ -125,5 +140,6 @@ class $modify(FPSNode, CCNode) {
 $on_mod(Loaded) {
     listenForSettingChanges<int64_t>("fps", [](int64_t) { applyFPS(); });
     listenForSettingChanges<bool>("enabled", [](bool) { applyFPS(); updateCounter(); });
+    listenForSettingChanges<bool>("force-fps", [](bool) { applyFPS(); });
     listenForSettingChanges<bool>("fps-counter", [](bool) { updateCounter(); });
 }
