@@ -1,7 +1,7 @@
 {
   "geode": "5.11.2",
   "gd": { "android": "2.2081" },
-  "version": "v1.1.0",
+  "version": "v1.2.0",
   "id": "zeer866.fpsboost",
   "name": "FPS Boost",
   "developer": "Zeer866",
@@ -22,6 +22,12 @@
       "default": 120,
       "min": 30,
       "max": 800
+    },
+    "force-fps": {
+      "type": "bool",
+      "name": "Forzar FPS exactos",
+      "description": "Fuerza el limite exacto que elegiste, aunque el juego intente cambiarlo. Desactiva el Modo seguro.",
+      "default": true
     },
     "safe-mode": {
       "type": "bool",
