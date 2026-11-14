@@ -289,7 +289,7 @@ class $modify(FPSPlayLayer, PlayLayer) {
     bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
         if (autoLDM() && level) {
             int thr = static_cast<int>(Mod::get()->getSettingValue<int64_t>("auto-ldm-threshold"));
-            if (thr <= 0 || toInt(level->m_objectCount) >= thr) {
+            if (thr <= 0 || level->m_objectCount.value() >= thr) {
                 level->m_lowDetailMode = true;
                 level->m_lowDetailModeToggled = true;
             }
