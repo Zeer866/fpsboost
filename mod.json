@@ -1,7 +1,7 @@
 {
   "geode": "5.11.2",
   "gd": { "win": "2.2081", "android": "2.2081" },
-  "version": "v1.4.0",
+  "version": "v1.5.0",
   "id": "zeer866.fpsboost",
   "name": "FPS Boost",
   "developer": "Zeer866",
@@ -35,11 +35,25 @@
       "description": "Baja el limite si tu dispositivo no aguanta los FPS, para evitar lag.",
       "default": true
     },
+    "auto-profile": {
+      "type": "bool",
+      "name": "Perfil automatico",
+      "description": "Elige solo Low Detail, estelas, brillos y render ligero segun el nivel de tu GPU. No cambia tus FPS.",
+      "default": false
+    },
     "auto-ldm": {
       "type": "bool",
       "name": "Auto LDM",
-      "description": "Activa el Low Detail Mode del juego en todos los niveles al entrar.",
+      "description": "Activa el Low Detail Mode del juego al entrar a un nivel.",
       "default": false
+    },
+    "auto-ldm-threshold": {
+      "type": "int",
+      "name": "Auto LDM: minimo de objetos",
+      "description": "Solo activa el LDM en niveles con al menos esta cantidad de objetos. En 0 se activa en todos.",
+      "default": 0,
+      "min": 0,
+      "max": 100000
     },
     "low-detail": {
       "type": "bool",
@@ -50,13 +64,43 @@
     "render-lite": {
       "type": "bool",
       "name": "Render ligero",
-      "description": "Apaga el depth test de la GPU y oculta las estelas. Reinicia el juego para volver al normal.",
+      "description": "Apaga el depth test de la GPU. Reinicia el juego para volver al normal.",
+      "default": false
+    },
+    "no-trails": {
+      "type": "bool",
+      "name": "Quitar estelas",
+      "description": "Oculta la estela del jugador y de la wave.",
+      "default": false
+    },
+    "no-glow": {
+      "type": "bool",
+      "name": "Quitar brillos",
+      "description": "No dibuja el brillo (glow) de los objetos.",
+      "default": false
+    },
+    "hide-deco": {
+      "type": "bool",
+      "name": "Ocultar decoracion (experimental)",
+      "description": "Esconde los objetos sin hitbox. Ayuda en niveles pesados, pero cambia como se ven.",
       "default": false
     },
     "fps-counter": {
       "type": "bool",
       "name": "Contador de FPS",
       "description": "Muestra los FPS en pantalla.",
+      "default": false
+    },
+    "gpu-info-popup": {
+      "type": "bool",
+      "name": "Popup de info de GPU",
+      "description": "Muestra un popup con los datos de tu GPU la primera vez (tambien queda en el log).",
+      "default": true
+    },
+    "run-benchmark": {
+      "type": "bool",
+      "name": "Repetir benchmark",
+      "description": "Actívalo para volver a medir tu GPU. Se apaga solo.",
       "default": false
     }
   }
