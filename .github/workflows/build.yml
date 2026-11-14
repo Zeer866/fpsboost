@@ -26,7 +26,7 @@ jobs:
         with:
           combine: true
           cli: latest
-          sdk: nightly
+          sdk: v5.11.2
           target: ${{ matrix.config.target }}
 
   package:
